@@ -73,42 +73,32 @@ public class OptionsListWidget extends ElementListWidget<OptionsListWidget.Entry
 		bufferBuilder_1.vertex((double) this.left, (double) (this.bottom - 4), 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 0).next();
 		tessellator_1.draw();
 		int int_8 = Math.max(0, this.getMaxPosition() - (this.bottom - this.top - 4));
+
 		if (int_8 > 0)
 		{
-			int int_9 = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top))
-					/ (float) this.getMaxPosition());
+			int int_9 = (int) ((float) ((this.bottom - this.top) * (this.bottom - this.top)) / (float) this.getMaxPosition());
 			int_9 = MathHelper.clamp(int_9, 32, this.bottom - this.top - 8);
 			int int_10 = (int) this.getScrollAmount() * (this.bottom - this.top - int_9) / int_8 + this.top;
+
 			if (int_10 < this.top)
 			{
 				int_10 = this.top;
 			}
 
 			bufferBuilder_1.begin(7, VertexFormats.POSITION_UV_COLOR);
-			bufferBuilder_1.vertex((double) int_3, (double) this.bottom, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 255)
-					.next();
-			bufferBuilder_1.vertex((double) int_4, (double) this.bottom, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 255)
-					.next();
-			bufferBuilder_1.vertex((double) int_4, (double) this.top, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255)
-					.next();
-			bufferBuilder_1.vertex((double) int_3, (double) this.top, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255)
-					.next();
-			bufferBuilder_1.vertex((double) int_3, (double) (int_10 + int_9), 0.0D).texture(0.0D, 1.0D)
-					.color(128, 128, 128, 255).next();
-			bufferBuilder_1.vertex((double) int_4, (double) (int_10 + int_9), 0.0D).texture(1.0D, 1.0D)
-					.color(128, 128, 128, 255).next();
-			bufferBuilder_1.vertex((double) int_4, (double) int_10, 0.0D).texture(1.0D, 0.0D).color(128, 128, 128, 255)
-					.next();
-			bufferBuilder_1.vertex((double) int_3, (double) int_10, 0.0D).texture(0.0D, 0.0D).color(128, 128, 128, 255)
-					.next();
-			bufferBuilder_1.vertex((double) int_3, (double) (int_10 + int_9 - 1), 0.0D).texture(0.0D, 1.0D)
-					.color(192, 192, 192, 255).next();
-			bufferBuilder_1.vertex((double) (int_4 - 1), (double) (int_10 + int_9 - 1), 0.0D).texture(1.0D, 1.0D)
-					.color(192, 192, 192, 255).next();
-			bufferBuilder_1.vertex((double) (int_4 - 1), (double) int_10, 0.0D).texture(1.0D, 0.0D)
-					.color(192, 192, 192, 255).next();
-			bufferBuilder_1.vertex((double) int_3, (double) int_10, 0.0D).texture(0.0D, 0.0D).color(192, 192, 192, 255)
-					.next();
+			bufferBuilder_1.vertex((double) int_3, (double) this.bottom, 0.0D).texture(0.0D, 1.0D).color(0, 0, 0, 255).next();
+			bufferBuilder_1.vertex((double) int_4, (double) this.bottom, 0.0D).texture(1.0D, 1.0D).color(0, 0, 0, 255).next();
+			bufferBuilder_1.vertex((double) int_4, (double) this.top, 0.0D).texture(1.0D, 0.0D).color(0, 0, 0, 255).next();
+			bufferBuilder_1.vertex((double) int_3, (double) this.top, 0.0D).texture(0.0D, 0.0D).color(0, 0, 0, 255).next();
+			bufferBuilder_1.vertex((double) int_3, (double) (int_10 + int_9), 0.0D).texture(0.0D, 1.0D).color(128, 128, 128, 255).next();
+			bufferBuilder_1.vertex((double) int_4, (double) (int_10 + int_9), 0.0D).texture(1.0D, 1.0D).color(128, 128, 128, 255).next();
+			bufferBuilder_1.vertex((double) int_4, (double) int_10, 0.0D).texture(1.0D, 0.0D).color(128, 128, 128, 255).next();
+			bufferBuilder_1.vertex((double) int_3, (double) int_10, 0.0D).texture(0.0D, 0.0D).color(128, 128, 128, 255).next();
+			bufferBuilder_1.vertex((double) int_3, (double) (int_10 + int_9 - 1), 0.0D).texture(0.0D, 1.0D).color(192, 192, 192, 255).next();
+			bufferBuilder_1.vertex((double) (int_4 - 1), (double) (int_10 + int_9 - 1), 0.0D).texture(1.0D, 1.0D).color(192, 192, 192, 255).next();
+			bufferBuilder_1.vertex((double) (int_4 - 1), (double) int_10, 0.0D).texture(1.0D, 0.0D).color(192, 192, 192, 255).next();
+			bufferBuilder_1.vertex((double) int_3, (double) int_10, 0.0D).texture(0.0D, 0.0D).color(192, 192, 192, 255).next();
+
 			tessellator_1.draw();
 		}
 
@@ -121,8 +111,8 @@ public class OptionsListWidget extends ElementListWidget<OptionsListWidget.Entry
 
 	public void save()
 	{
-		children().stream().filter(e -> e instanceof OptionsEntryValue).map(e -> (OptionsEntryValue<?>) e)
-				.forEach(OptionsEntryValue::save);
+		children().stream().filter(e -> e instanceof OptionsEntryValue).map(e -> (OptionsEntryValue<?>) e).forEach(OptionsEntryValue::save);
+
 		if (diskWriter != null)
 			diskWriter.run();
 	}
@@ -132,6 +122,7 @@ public class OptionsListWidget extends ElementListWidget<OptionsListWidget.Entry
 		if (entry instanceof OptionsEntryValue)
 		{
 			Element element = ((OptionsEntryValue<?>) entry).getListener();
+
 			if (element != null)
 				owner.addListener(element);
 		}
@@ -140,7 +131,6 @@ public class OptionsListWidget extends ElementListWidget<OptionsListWidget.Entry
 
 	public abstract static class Entry extends ElementListWidget.Entry<Entry>
 	{
-
 		protected final MinecraftClient client;
 
 		public Entry()
@@ -155,7 +145,6 @@ public class OptionsListWidget extends ElementListWidget<OptionsListWidget.Entry
 		}
 
 		@Override
-		public abstract void render(int index, int rowTop, int rowLeft, int width, int height, int mouseX, int mouseY,
-				boolean hovered, float deltaTime);
+		public abstract void render(int index, int rowTop, int rowLeft, int width, int height, int mouseX, int mouseY, boolean hovered, float deltaTime);
 	}
 }

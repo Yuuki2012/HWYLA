@@ -62,6 +62,7 @@ public class WailaRenderEvent
 		{
 			Class<?> overlayRenderer = Class.forName("mcp.mobius.waila.overlay.OverlayRenderer");
 			Method method = overlayRenderer.getMethod("loadGLState");
+
 			loadGlState_ = MethodHandles.lookup().unreflect(method);
 		}
 		catch (Exception e)
@@ -102,7 +103,6 @@ public class WailaRenderEvent
 	 */
 	public static class Pre extends WailaRenderEvent
 	{
-
 		private final ICommonAccessor accessor;
 
 		public Pre(ICommonAccessor accessor, Rectangle position)
@@ -128,7 +128,6 @@ public class WailaRenderEvent
 	 */
 	public static class Post extends WailaRenderEvent
 	{
-
 		public Post(Rectangle position)
 		{
 			super(position);

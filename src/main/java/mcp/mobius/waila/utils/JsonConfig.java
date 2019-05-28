@@ -2,7 +2,7 @@ package mcp.mobius.waila.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.fabricmc.loader.FabricLoader;
+import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.File;
 import java.io.FileReader;
@@ -10,10 +10,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.function.Supplier;
 
-@SuppressWarnings("deprecation")
 public class JsonConfig<T>
 {
-
 	private static final Gson DEFAULT_GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	private final File configFile;
@@ -22,7 +20,7 @@ public class JsonConfig<T>
 
 	public JsonConfig(String fileName, Class<T> configClass, Supplier<T> defaultFactory)
 	{
-		this.configFile = new File(FabricLoader.INSTANCE.getConfigDirectory(), fileName + (fileName.endsWith(".json") ? "" : ".json"));
+		this.configFile = new File(FabricLoader.getInstance().getConfigDirectory(), fileName + (fileName.endsWith(".json") ? "" : ".json"));
 		this.configGetter = new CachedSupplier<>(() ->
 		{
 			if (!configFile.exists())
@@ -31,6 +29,7 @@ public class JsonConfig<T>
 				write(def, false);
 				return def;
 			}
+
 			try (FileReader reader = new FileReader(configFile))
 			{
 				return gson.fromJson(reader, configClass);

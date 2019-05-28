@@ -21,6 +21,7 @@ public class HUDHandlerEntityIcon implements IEntityComponentProvider
 		{
 			AbstractMinecartEntity minecartEntity = (AbstractMinecartEntity) accessor.getEntity();
 			AbstractMinecartEntity.Type type = minecartEntity.getMinecartType();
+
 			switch (type)
 			{
 			case RIDEABLE:
@@ -42,6 +43,7 @@ public class HUDHandlerEntityIcon implements IEntityComponentProvider
 		else if (accessor.getEntity() instanceof ItemFrameEntity)
 		{
 			ItemStack held = ((ItemFrameEntity) accessor.getEntity()).getHeldItemStack();
+
 			return held.isEmpty() ? new ItemStack(Items.ITEM_FRAME) : held;
 		}
 		else if (accessor.getEntity() instanceof PaintingEntity)
@@ -52,6 +54,7 @@ public class HUDHandlerEntityIcon implements IEntityComponentProvider
 		{
 			return new ItemStack(Items.LEAD);
 		}
+
 		return ItemStack.EMPTY;
 	}
 }

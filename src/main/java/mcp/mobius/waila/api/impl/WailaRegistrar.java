@@ -122,9 +122,7 @@ public class WailaRegistrar implements IRegistrar
 	private <T, V extends Class<?>> void registerProvider(T dataProvider, V clazz, Map<V, List<T>> target)
 	{
 		if (clazz == null || dataProvider == null)
-			throw new RuntimeException(String.format(
-					"Trying to register a null provider or null block ! Please check the stacktrace to know what was the original registration method. [Provider : %s, Target : %s]",
-					dataProvider.getClass().getName(), clazz));
+			throw new RuntimeException(String.format("Trying to register a null provider or null block ! Please check the stacktrace to know what was the original registration method. [Provider : %s, Target : %s]", dataProvider.getClass().getName(), clazz));
 
 		List<T> providers = target.computeIfAbsent(clazz, c -> Lists.newArrayList());
 		if (providers.contains(dataProvider))
@@ -283,6 +281,7 @@ public class WailaRegistrar implements IRegistrar
 		for (Class clazz : target.keySet())
 			if (clazz.isInstance(obj))
 				return true;
+
 		return false;
 	}
 

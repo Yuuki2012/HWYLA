@@ -20,7 +20,6 @@ import java.util.List;
  */
 public interface IComponentProvider
 {
-
 	/**
 	 * Callback used to override the default Waila lookup system.</br>
 	 * Will only be called if the implementing class is registered via

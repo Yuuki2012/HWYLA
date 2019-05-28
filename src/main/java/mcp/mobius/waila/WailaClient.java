@@ -45,6 +45,7 @@ public class WailaClient implements ClientModInitializer
 		{
 			Class<?> modMenuApi_ = Class.forName("io.github.prospector.modmenu.api.ModMenuApi");
 			Method addConfigOverride_ = modMenuApi_.getMethod("addConfigOverride", String.class, Runnable.class);
+
 			addConfigOverride_.invoke(null, Waila.MODID, (Runnable) () -> MinecraftClient.getInstance().openScreen(new GuiConfigHome(null)));
 		}
 		catch (Exception e)

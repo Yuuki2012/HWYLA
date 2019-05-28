@@ -11,33 +11,42 @@ import net.minecraft.util.Identifier;
 
 import java.util.Map;
 
-public class ClientNetworkHandler {
+public class ClientNetworkHandler
+{
+	public static final Identifier RECEIVE_DATA = new Identifier(Waila.MODID, "receive_data");
+	public static final Identifier GET_CONFIG = new Identifier(Waila.MODID, "send_config");
 
-    public static final Identifier RECEIVE_DATA = new Identifier(Waila.MODID, "receive_data");
-    public static final Identifier GET_CONFIG = new Identifier(Waila.MODID, "send_config");
+	public static void init()
+	{
+		ClientSidePacketRegistry.INSTANCE.register(ClientNetworkHandler.RECEIVE_DATA, (packetContext, packetByteBuf) ->
+		{
+			CompoundTag tag = packetByteBuf.readCompoundTag();
+			packetContext.getTaskQueue().execute(() ->
+			{
+				DataAccessor.INSTANCE.setServerData(tag);
+			});
+		});
 
-    public static void init() {
-        ClientSidePacketRegistry.INSTANCE.register(ClientNetworkHandler.RECEIVE_DATA, (packetContext, packetByteBuf) -> {
-            CompoundTag tag = packetByteBuf.readCompoundTag();
-            packetContext.getTaskQueue().execute(() -> {
-                DataAccessor.INSTANCE.setServerData(tag);
-            });
-        });
+		ClientSidePacketRegistry.INSTANCE.register(ClientNetworkHandler.GET_CONFIG, (packetContext, packetByteBuf) ->
+		{
+			int size = packetByteBuf.readInt();
+			Map<Identifier, Boolean> temp = Maps.newHashMap();
 
-        ClientSidePacketRegistry.INSTANCE.register(ClientNetworkHandler.GET_CONFIG, (packetContext, packetByteBuf) -> {
-            int size = packetByteBuf.readInt();
-            Map<Identifier, Boolean> temp = Maps.newHashMap();
-            for (int i = 0; i < size; i++) {
-                int idLength = packetByteBuf.readInt();
-                Identifier id = new Identifier(packetByteBuf.readString(idLength));
-                boolean value = packetByteBuf.readBoolean();
-                temp.put(id, value);
-            }
+			for (int i = 0; i < size; i++)
+			{
+				int idLength = packetByteBuf.readInt();
+				Identifier id = new Identifier(packetByteBuf.readString(idLength));
+				boolean value = packetByteBuf.readBoolean();
 
-            packetContext.getTaskQueue().execute(() -> {
-                temp.forEach(PluginConfig.INSTANCE::set);
-                Waila.LOGGER.info("Received config from the server: {}", new Gson().toJson(temp));
-            });
-        });
-    }
+				temp.put(id, value);
+			}
+
+			packetContext.getTaskQueue().execute(() ->
+			{
+				temp.forEach(PluginConfig.INSTANCE::set);
+
+				Waila.LOGGER.info("Received config from the server: {}", new Gson().toJson(temp));
+			});
+		});
+	}
 }

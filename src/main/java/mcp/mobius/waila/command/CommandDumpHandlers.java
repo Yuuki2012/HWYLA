@@ -15,7 +15,8 @@ public class CommandDumpHandlers
 {
 	public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
 	{
-		dispatcher.register(CommandManager.literal("dumpHandlers").requires(source -> source.hasPermissionLevel(2)).executes(context ->
+		dispatcher.register(CommandManager.literal("dumpHandlers").requires(source -> source.hasPermissionLevel(2))
+				.executes(context ->
 				{
 					File file = new File("waila_handlers.md");
 					try (FileWriter writer = new FileWriter(file))

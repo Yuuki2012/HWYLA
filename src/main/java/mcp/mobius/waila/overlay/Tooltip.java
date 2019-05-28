@@ -18,6 +18,7 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class Tooltip
 {
 	private final MinecraftClient client;
@@ -46,6 +47,7 @@ public class Tooltip
 			Dimension size = getLineSize(c, components);
 			totalSize.setSize(Math.max(totalSize.width, size.width), totalSize.height + size.height);
 			TextComponent component = c;
+
 			if (component instanceof TaggedTextComponent)
 				component = ((ITaggableList<Identifier, TextComponent>) components).getTag(((TaggedTextComponent) component).getTag());
 
@@ -74,6 +76,7 @@ public class Tooltip
 			{
 				RenderableTextComponent component = (RenderableTextComponent) line.getComponent();
 				int xOffset = 0;
+
 				for (RenderableTextComponent.RenderContainer container : component.getRenderers())
 				{
 					Dimension size = container.getRenderer().getSize(container.getData(), DataAccessor.INSTANCE);
@@ -87,6 +90,7 @@ public class Tooltip
 				client.textRenderer.drawWithShadow(line.getComponent().getFormattedText(), position.x, position.y,
 						color.getFontColor());
 			}
+
 			position.y += line.size.height;
 		}
 	}
@@ -97,11 +101,13 @@ public class Tooltip
 		{
 			RenderableTextComponent renderable = (RenderableTextComponent) component;
 			List<RenderableTextComponent.RenderContainer> renderers = renderable.getRenderers();
+
 			if (renderers.isEmpty())
 				return new Dimension(0, 0);
 
 			int width = 0;
 			int height = 0;
+
 			for (RenderableTextComponent.RenderContainer container : renderers)
 			{
 				Dimension iconSize = container.getRenderer().getSize(container.getData(), DataAccessor.INSTANCE);
@@ -114,16 +120,15 @@ public class Tooltip
 		else if (component instanceof TaggedTextComponent)
 		{
 			TaggedTextComponent tagged = (TaggedTextComponent) component;
+
 			if (components instanceof TaggableList)
 			{
-				TextComponent taggedLine = ((TaggableList<Identifier, TextComponent>) components)
-						.getTag(tagged.getTag());
+				TextComponent taggedLine = ((TaggableList<Identifier, TextComponent>) components).getTag(tagged.getTag());
 				return taggedLine == null ? new Dimension(0, 0) : getLineSize(taggedLine, components);
 			}
 		}
 
-		return new Dimension(client.textRenderer.getStringWidth(component.getFormattedText()),
-				client.textRenderer.fontHeight + 1);
+		return new Dimension(client.textRenderer.getStringWidth(component.getFormattedText()), client.textRenderer.fontHeight + 1);
 	}
 
 	public List<Line> getLines()
@@ -133,18 +138,14 @@ public class Tooltip
 
 	public boolean hasItem()
 	{
-		return showItem && Waila.CONFIG.get().getGeneral().shouldShowItem()
-				&& !RayTracing.INSTANCE.getIdentifierStack().isEmpty();
+		return showItem && Waila.CONFIG.get().getGeneral().shouldShowItem() && !RayTracing.INSTANCE.getIdentifierStack().isEmpty();
 	}
 
 	public Rectangle getPosition()
 	{
 		Window window = MinecraftClient.getInstance().window;
-		return new Rectangle(
-				(int) (window.getScaledWidth() * Waila.CONFIG.get().getOverlay().getOverlayPosX()
-						- totalSize.width / 2), // Center it
-				(int) (window.getScaledHeight() * (1.0F - Waila.CONFIG.get().getOverlay().getOverlayPosY())),
-				totalSize.width, totalSize.height);
+
+		return new Rectangle((int) (window.getScaledWidth() * Waila.CONFIG.get().getOverlay().getOverlayPosX() - totalSize.width / 2), (int) (window.getScaledHeight() * (1.0F - Waila.CONFIG.get().getOverlay().getOverlayPosY())), totalSize.width, totalSize.height);
 	}
 
 	public static class Line

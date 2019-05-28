@@ -35,6 +35,8 @@ public class TooltipRendererStack implements ITooltipRenderer
 			return;
 
 		CompoundTag stackTag = null;
+		ItemStack stack = new ItemStack(item, count);
+
 		try
 		{
 			stackTag = StringNbtReader.parse(tag.getString("nbt"));
@@ -44,7 +46,6 @@ public class TooltipRendererStack implements ITooltipRenderer
 			// No-op
 		}
 
-		ItemStack stack = new ItemStack(item, count);
 		if (stackTag != null)
 			stack.setTag(stackTag);
 

@@ -7,86 +7,103 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class OptionsEntryValueInput<T> extends OptionsEntryValue<T> {
+public class OptionsEntryValueInput<T> extends OptionsEntryValue<T>
+{
+	public static final Predicate<String> ANY = s -> true;
+	public static final Predicate<String> INTEGER = s -> s.matches("^[0-9]*$");
+	public static final Predicate<String> FLOAT = s -> s.matches("[-+]?([0-9]*\\.[0-9]+|[0-9]+)") || s.endsWith(".") || s.isEmpty();
 
-    public static final Predicate<String> ANY = s -> true;
-    public static final Predicate<String> INTEGER = s -> s.matches("^[0-9]*$");
-    public static final Predicate<String> FLOAT = s -> s.matches("[-+]?([0-9]*\\.[0-9]+|[0-9]+)") || s.endsWith(".") || s.isEmpty();
+	private final TextFieldWidget textField;
 
-    private final TextFieldWidget textField;
+	public OptionsEntryValueInput(String optionName, T value, Consumer<T> save, Predicate<String> validator)
+	{
+		super(optionName, save);
 
-    public OptionsEntryValueInput(String optionName, T value, Consumer<T> save, Predicate<String> validator) {
-        super(optionName, save);
+		this.value = value;
+		this.textField = new WatchedTextfield(this, client.textRenderer, 0, 0, 98, 18);
 
-        this.value = value;
-        this.textField = new WatchedTextfield(this, client.textRenderer, 0, 0, 98, 18);
-        textField.setText(String.valueOf(value));
-        textField.method_1890(validator);
-    }
+		textField.setText(String.valueOf(value));
+		textField.method_1890(validator);
+	}
 
-    public OptionsEntryValueInput(String optionName, T value, Consumer<T> save) {
-        this(optionName, value, save, s -> true);
-    }
+	public OptionsEntryValueInput(String optionName, T value, Consumer<T> save)
+	{
+		this(optionName, value, save, s -> true);
+	}
 
-    @Override
-    protected void drawValue(int entryWidth, int entryHeight, int x, int y, int mouseX, int mouseY, boolean selected, float partialTicks) {
-        textField.setX(x + 135);
-        textField.y = y + entryHeight / 6;
-        textField.render(mouseX, mouseY, partialTicks);
-    }
+	@Override
+	protected void drawValue(int entryWidth, int entryHeight, int x, int y, int mouseX, int mouseY, boolean selected, float partialTicks)
+	{
+		textField.setX(x + 135);
+		textField.y = y + entryHeight / 6;
+		textField.render(mouseX, mouseY, partialTicks);
+	}
 
-    @Override
-    public Element getListener() {
-        return textField;
-    }
+	@Override
+	public Element getListener()
+	{
+		return textField;
+	}
 
-    @SuppressWarnings("unchecked")
-    private void setValue(String text) {
-        if (value instanceof String)
-            value = (T) text;
+	@SuppressWarnings("unchecked")
+	private void setValue(String text)
+	{
+		if (value instanceof String)
+			value = (T) text;
 
-        try {
-            if (value instanceof Integer)
-                value = (T) Integer.valueOf(text);
-            else if (value instanceof Short)
-                value = (T) Short.valueOf(text);
-            else if (value instanceof Byte)
-                value = (T) Byte.valueOf(text);
-            else if (value instanceof Long)
-                value = (T) Long.valueOf(text);
-            else if (value instanceof Double)
-                value = (T) Double.valueOf(text);
-            else if (value instanceof Float)
-                value = (T) Float.valueOf(text);
-        } catch (NumberFormatException e) {
-            // no-op
-        }
-    }
+		try
+		{
+			if (value instanceof Integer)
+				value = (T) Integer.valueOf(text);
+			else if (value instanceof Short)
+				value = (T) Short.valueOf(text);
+			else if (value instanceof Byte)
+				value = (T) Byte.valueOf(text);
+			else if (value instanceof Long)
+				value = (T) Long.valueOf(text);
+			else if (value instanceof Double)
+				value = (T) Double.valueOf(text);
+			else if (value instanceof Float)
+				value = (T) Float.valueOf(text);
+		}
+		catch (NumberFormatException e)
+		{
+			// no-op
+		}
+	}
 
-    private static class WatchedTextfield extends TextFieldWidget {
-        private final OptionsEntryValueInput<?> watcher;
+	private static class WatchedTextfield extends TextFieldWidget
+	{
+		private final OptionsEntryValueInput<?> watcher;
 
-        public WatchedTextfield(OptionsEntryValueInput<?> watcher, TextRenderer fontRenderer, int x, int y, int width, int height) {
-            super(fontRenderer, x, y, width, height, "");
+		public WatchedTextfield(OptionsEntryValueInput<?> watcher, TextRenderer fontRenderer, int x, int y, int width, int height)
+		{
+			super(fontRenderer, x, y, width, height, "");
 
-            this.watcher = watcher;
-        }
+			this.watcher = watcher;
+		}
 
-        @Override
-        public void addText(String string) {
-            super.addText(string);
-            watcher.setValue(getText());
-        }
+		@Override
+		public void addText(String string)
+		{
+			super.addText(string);
 
-        @Override
-        public void setText(String value) {
-            super.setText(value);
-            watcher.setValue(getText());
-        }
+			watcher.setValue(getText());
+		}
 
-        public void method_1878(int count) {
-            super.method_1878(count);
-            watcher.setValue(getText());
-        }
-    }
+		@Override
+		public void setText(String value)
+		{
+			super.setText(value);
+
+			watcher.setValue(getText());
+		}
+
+		public void method_1878(int count)
+		{
+			super.method_1878(count);
+
+			watcher.setValue(getText());
+		}
+	}
 }

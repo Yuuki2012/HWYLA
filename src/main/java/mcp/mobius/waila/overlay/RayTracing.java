@@ -73,6 +73,7 @@ public class RayTracing
 
 		RayTraceContext.FluidHandling fluidView = Waila.CONFIG.get().getGeneral().shouldDisplayFluids() ? RayTraceContext.FluidHandling.SOURCE_ONLY : RayTraceContext.FluidHandling.NONE;
 		RayTraceContext context = new RayTraceContext(eyePosition, traceEnd, RayTraceContext.ShapeType.OUTLINE, fluidView, entity);
+
 		return entity.getEntityWorld().rayTrace(context);
 	}
 

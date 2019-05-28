@@ -43,11 +43,8 @@ public class HUDHandlerVanilla implements IComponentProvider, IServerDataProvide
 		if (accessor.getBlock() == Blocks.SPAWNER && config.get(PluginMinecraft.CONFIG_SPAWNER_TYPE))
 		{
 			MobSpawnerBlockEntity spawner = (MobSpawnerBlockEntity) accessor.getBlockEntity();
-			tooltip.set(0,
-					(TextComponent) new TranslatableComponent(accessor.getBlock().getTranslationKey())
-							.append(new TextComponent(" ("))
-							.append(spawner.getLogic().getRenderedEntity().getDisplayName())
-							.append(new TextComponent(")")));
+
+			tooltip.set(0, (TextComponent) new TranslatableComponent(accessor.getBlock().getTranslationKey()).append(new TextComponent(" (")).append(spawner.getLogic().getRenderedEntity().getDisplayName()).append(new TextComponent(")")));
 		}
 	}
 
@@ -59,8 +56,8 @@ public class HUDHandlerVanilla implements IComponentProvider, IServerDataProvide
 			if (accessor.getBlock() instanceof CropBlock)
 			{
 				CropBlock crop = (CropBlock) accessor.getBlock();
-				addMaturityTooltip(tooltip,
-						accessor.getBlockState().get(crop.getAgeProperty()) / (float) crop.getMaxAge());
+
+				addMaturityTooltip(tooltip, accessor.getBlockState().get(crop.getAgeProperty()) / (float) crop.getMaxAge());
 			}
 			else if (accessor.getBlock() == Blocks.MELON_STEM || accessor.getBlock() == Blocks.PUMPKIN_STEM)
 			{
@@ -125,6 +122,7 @@ public class HUDHandlerVanilla implements IComponentProvider, IServerDataProvide
 		if (blockEntity instanceof JukeboxBlockEntity)
 		{
 			JukeboxBlockEntity jukebox = (JukeboxBlockEntity) blockEntity;
+
 			data.putString("record", TextComponent.Serializer.toJsonString(jukebox.getRecord().getDisplayName()));
 		}
 	}
@@ -132,6 +130,7 @@ public class HUDHandlerVanilla implements IComponentProvider, IServerDataProvide
 	private static void addMaturityTooltip(List<TextComponent> tooltip, float growthValue)
 	{
 		growthValue *= 100.0F;
+
 		if (growthValue < 100.0F)
 			tooltip.add((TextComponent) new TranslatableComponent("tooltip.waila.crop_growth", String.format("%.0f%%", growthValue)).append(""));
 		else

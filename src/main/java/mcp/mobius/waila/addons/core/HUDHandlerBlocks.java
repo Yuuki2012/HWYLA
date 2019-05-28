@@ -15,6 +15,7 @@ import net.minecraft.ChatFormat;
 
 import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class HUDHandlerBlocks implements IComponentProvider
 {
 	static final IComponentProvider INSTANCE = new HUDHandlerBlocks();
@@ -22,7 +23,6 @@ public class HUDHandlerBlocks implements IComponentProvider
 	static final Identifier REGISTRY_NAME_TAG = new Identifier(Waila.MODID, "registry_name");
 	static final Identifier MOD_NAME_TAG = new Identifier(Waila.MODID, "mod_name");
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void appendHead(List<TextComponent> tooltip, IDataAccessor accessor, IPluginConfig config)
 	{
@@ -44,13 +44,14 @@ public class HUDHandlerBlocks implements IComponentProvider
 			state.getProperties().forEach(p ->
 			{
 				Comparable<?> value = state.get(p);
+
 				TextComponent valueText = (TextComponent) new TextComponent(value.toString()).setStyle(new Style().setColor(p instanceof BooleanProperty ? value == Boolean.TRUE ? ChatFormat.GREEN : ChatFormat.RED : ChatFormat.RESET));
+
 				tooltip.add((TextComponent) new TextComponent(p.getName() + ":").append(valueText));
 			});
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void appendTail(List<TextComponent> tooltip, IDataAccessor accessor, IPluginConfig config)
 	{
@@ -58,6 +59,7 @@ public class HUDHandlerBlocks implements IComponentProvider
 		if (!Strings.isNullOrEmpty(modName))
 		{
 			modName = String.format(Waila.CONFIG.get().getFormatting().getModName(), modName);
+
 			((ITaggableList<Identifier, TextComponent>) tooltip).setTag(MOD_NAME_TAG, new TextComponent(modName));
 		}
 	}

@@ -21,7 +21,7 @@ public class MixinItemStack
 	{
 		List<TextComponent> components = callbackInfo.getReturnValue();
 		ItemStack stack = (ItemStack) (Object) this;
-		components.add(new TextComponent(String.format(Waila.CONFIG.get().getFormatting().getModName(),
-				ModIdentification.getModInfo(stack.getItem()).getName())));
+
+		components.add(new TextComponent(String.format(Waila.CONFIG.get().getFormatting().getModName(), ModIdentification.getModInfo(stack.getItem()).getName())));
 	}
 }
