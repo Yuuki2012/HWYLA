@@ -15,37 +15,41 @@ import net.minecraft.util.registry.Registry;
 
 import java.awt.Dimension;
 
-public class TooltipRendererStack implements ITooltipRenderer {
+public class TooltipRendererStack implements ITooltipRenderer
+{
+	@Override
+	public Dimension getSize(CompoundTag tag, ICommonAccessor accessor)
+	{
+		return new Dimension(18, 18);
+	}
 
-    @Override
-    public Dimension getSize(CompoundTag tag, ICommonAccessor accessor) {
-        return new Dimension(18, 18);
-    }
+	@Override
+	public void draw(CompoundTag tag, ICommonAccessor accessor, int x, int y)
+	{
+		int count = tag.getInt("count");
+		if (count <= 0)
+			return;
 
-    @Override
-    public void draw(CompoundTag tag, ICommonAccessor accessor, int x, int y) {
-        int count = tag.getInt("count");
-        if (count <= 0)
-            return;
+		Item item = Registry.ITEM.get(new Identifier(tag.getString("id")));
+		if (item == Items.AIR)
+			return;
 
-        Item item = Registry.ITEM.get(new Identifier(tag.getString("id")));
-        if (item == Items.AIR)
-            return;
+		CompoundTag stackTag = null;
+		try
+		{
+			stackTag = StringNbtReader.parse(tag.getString("nbt"));
+		}
+		catch (CommandSyntaxException e)
+		{
+			// No-op
+		}
 
-        CompoundTag stackTag = null;
-        try {
-            stackTag = StringNbtReader.parse(tag.getString("nbt"));
-        } catch (CommandSyntaxException e) {
-            // No-op
-        }
+		ItemStack stack = new ItemStack(item, count);
+		if (stackTag != null)
+			stack.setTag(stackTag);
 
-        ItemStack stack = new ItemStack(item, count);
-        if (stackTag != null)
-            stack.setTag(stackTag);
-
-        GuiLighting.enableForItems();
-        DisplayUtil.renderStack(x, y, stack);
-        GuiLighting.disable();
-    }
-
+		GuiLighting.enableForItems();
+		DisplayUtil.renderStack(x, y, stack);
+		GuiLighting.disable();
+	}
 }

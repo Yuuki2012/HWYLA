@@ -8,26 +8,28 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
- * The Accessor is used to get some basic data out of the game without having to request direct access to the game engine.<br>
- * It will also return things that are unmodified by the overriding systems (like getStack).<br>
+ * The Accessor is used to get some basic data out of the game without having to
+ * request direct access to the game engine.<br>
+ * It will also return things that are unmodified by the overriding systems
+ * (like getStack).<br>
  * An instance of this interface is passed to most of Waila Entity callbacks.
  *
  * @author ProfMobius
  */
 
-public interface IEntityAccessor {
+public interface IEntityAccessor
+{
+	World getWorld();
 
-    World getWorld();
+	PlayerEntity getPlayer();
 
-    PlayerEntity getPlayer();
+	Entity getEntity();
 
-    Entity getEntity();
+	HitResult getHitResult();
 
-    HitResult getHitResult();
+	Vec3d getRenderingPosition();
 
-    Vec3d getRenderingPosition();
+	CompoundTag getServerData();
 
-    CompoundTag getServerData();
-
-    double getPartialFrame();
+	double getPartialFrame();
 }

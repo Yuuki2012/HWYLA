@@ -9,10 +9,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.TextComponent;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 

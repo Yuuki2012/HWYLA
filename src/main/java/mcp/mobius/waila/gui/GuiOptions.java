@@ -5,10 +5,11 @@ import mcp.mobius.waila.gui.config.OptionsListWidget;
 import mcp.mobius.waila.gui.config.value.OptionsEntryValue;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.TextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public abstract class GuiOptions extends Screen {
     private final Runnable canceller;
     private OptionsListWidget options;
 
-    public GuiOptions(Screen parent, TextComponent title, Runnable saver, Runnable canceller) {
+    public GuiOptions(Screen parent, TranslatableComponent title, Runnable saver, Runnable canceller) {
         super(title);
 
         this.parent = parent;
@@ -27,7 +28,7 @@ public abstract class GuiOptions extends Screen {
         this.canceller = canceller;
     }
 
-    public GuiOptions(Screen parent, TextComponent title) {
+    public GuiOptions(Screen parent, TranslatableComponent title) {
         this(parent, title, null, null);
     }
 

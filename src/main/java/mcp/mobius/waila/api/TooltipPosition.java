@@ -1,8 +1,6 @@
 package mcp.mobius.waila.api;
 
-public enum TooltipPosition {
-    HEAD,
-    BODY,
-    TAIL,
-    ;
+public enum TooltipPosition
+{
+	HEAD, BODY, TAIL,;
 }

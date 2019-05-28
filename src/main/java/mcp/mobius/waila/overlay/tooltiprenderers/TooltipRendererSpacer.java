@@ -6,15 +6,17 @@ import net.minecraft.nbt.CompoundTag;
 
 import java.awt.Dimension;
 
-public class TooltipRendererSpacer implements ITooltipRenderer {
+public class TooltipRendererSpacer implements ITooltipRenderer
+{
+	@Override
+	public Dimension getSize(CompoundTag data, ICommonAccessor accessor)
+	{
+		return new Dimension(data.getInt("width"), data.getInt("height"));
+	}
 
-    @Override
-    public Dimension getSize(CompoundTag data, ICommonAccessor accessor) {
-        return new Dimension(data.getInt("width"), data.getInt("height"));
-    }
-
-    @Override
-    public void draw(CompoundTag data, ICommonAccessor accessor, int x, int y) {
-        // no-op
-    }
+	@Override
+	public void draw(CompoundTag data, ICommonAccessor accessor, int x, int y)
+	{
+		// no-op
+	}
 }

@@ -11,149 +11,172 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TextFormat;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisplayUtil {
+public class DisplayUtil
+{
+	private static final String[] NUM_SUFFIXES = new String[] { "", "k", "m", "b", "t" };
+	private static final int MAX_LENGTH = 4;
+	private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
-    private static final String[] NUM_SUFFIXES = new String[]{"", "k", "m", "b", "t"};
-    private static final int MAX_LENGTH = 4;
-    private static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	public static void renderStack(int x, int y, ItemStack stack)
+	{
+		enable3DRender();
 
-    public static void renderStack(int x, int y, ItemStack stack) {
-        enable3DRender();
-        try {
-            CLIENT.getItemRenderer().renderGuiItemIcon(stack, x, y);
-            ItemStack overlayRender = stack.copy();
-            overlayRender.setAmount(1);
-            CLIENT.getItemRenderer().renderGuiItemOverlay(CLIENT.textRenderer, overlayRender, x, y);
-            renderStackSize(CLIENT.textRenderer, stack, x, y);
-        } catch (Exception e) {
-            String stackStr = stack != null ? stack.toString() : "NullStack";
-            WailaExceptionHandler.handleErr(e, "renderStack | " + stackStr, null);
-        }
-        enable2DRender();
-    }
+		try
+		{
+			CLIENT.getItemRenderer().renderGuiItemIcon(stack, x, y);
+			ItemStack overlayRender = stack.copy();
+			overlayRender.setAmount(1);
+			CLIENT.getItemRenderer().renderGuiItemOverlay(CLIENT.textRenderer, overlayRender, x, y);
+			renderStackSize(CLIENT.textRenderer, stack, x, y);
+		}
+		catch (Exception e)
+		{
+			String stackStr = stack != null ? stack.toString() : "NullStack";
+			WailaExceptionHandler.handleErr(e, "renderStack | " + stackStr, null);
+		}
 
-    public static void renderStackSize(TextRenderer fr, ItemStack stack, int xPosition, int yPosition) {
-        if (!stack.isEmpty() && stack.getAmount() != 1) {
-            String s = shortHandNumber(stack.getAmount());
+		enable2DRender();
+	}
 
-            if (stack.getAmount() < 1)
-                s = TextFormat.RED + String.valueOf(stack.getAmount());
+	public static void renderStackSize(TextRenderer fr, ItemStack stack, int xPosition, int yPosition)
+	{
+		if (!stack.isEmpty() && stack.getAmount() != 1)
+		{
+			String s = shortHandNumber(stack.getAmount());
 
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepthTest();
-            GlStateManager.disableBlend();
-            fr.drawWithShadow(s, (float) (xPosition + 19 - 2 - fr.getStringWidth(s)), (float) (yPosition + 6 + 3), 16777215);
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepthTest();
-            GlStateManager.enableBlend();
-        }
-    }
+			if (stack.getAmount() < 1)
+				s = "§c"+ String.valueOf(stack.getAmount()); // TextFormat.RED
 
-    private static String shortHandNumber(Number number) {
-        String shorthand = new DecimalFormat("##0E0").format(number);
-        shorthand = shorthand.replaceAll("E[0-9]", NUM_SUFFIXES[Character.getNumericValue(shorthand.charAt(shorthand.length() - 1)) / 3]);
-        while (shorthand.length() > MAX_LENGTH || shorthand.matches("[0-9]+\\.[a-z]"))
-            shorthand = shorthand.substring(0, shorthand.length() - 2) + shorthand.substring(shorthand.length() - 1);
+			GlStateManager.disableLighting();
+			GlStateManager.disableDepthTest();
+			GlStateManager.disableBlend();
+			fr.drawWithShadow(s, (float) (xPosition + 19 - 2 - fr.getStringWidth(s)), (float) (yPosition + 6 + 3), 16777215);
+			GlStateManager.enableLighting();
+			GlStateManager.enableDepthTest();
+			GlStateManager.enableBlend();
+		}
+	}
 
-        return shorthand;
-    }
+	private static String shortHandNumber(Number number)
+	{
+		String shorthand = new DecimalFormat("##0E0").format(number);
+		shorthand = shorthand.replaceAll("E[0-9]", NUM_SUFFIXES[Character.getNumericValue(shorthand.charAt(shorthand.length() - 1)) / 3]);
 
-    public static void enable3DRender() {
-        GlStateManager.enableLighting();
-        GlStateManager.enableDepthTest();
-    }
+		while (shorthand.length() > MAX_LENGTH || shorthand.matches("[0-9]+\\.[a-z]"))
+			shorthand = shorthand.substring(0, shorthand.length() - 2) + shorthand.substring(shorthand.length() - 1);
 
-    public static void enable2DRender() {
-        GlStateManager.disableLighting();
-        GlStateManager.disableDepthTest();
-    }
+		return shorthand;
+	}
 
-    public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {
-        float zLevel = 0.0F;
+	public static void enable3DRender()
+	{
+		GlStateManager.enableLighting();
+		GlStateManager.enableDepthTest();
+	}
 
-        float f = (float) (startColor >> 24 & 255) / 255.0F;
-        float f1 = (float) (startColor >> 16 & 255) / 255.0F;
-        float f2 = (float) (startColor >> 8 & 255) / 255.0F;
-        float f3 = (float) (startColor & 255) / 255.0F;
-        float f4 = (float) (endColor >> 24 & 255) / 255.0F;
-        float f5 = (float) (endColor >> 16 & 255) / 255.0F;
-        float f6 = (float) (endColor >> 8 & 255) / 255.0F;
-        float f7 = (float) (endColor & 255) / 255.0F;
-        GlStateManager.disableTexture();
-        GlStateManager.enableBlend();
-        GlStateManager.disableAlphaTest();
-        GlStateManager.blendFuncSeparate(770, 771, 1, 0);
-        GlStateManager.shadeModel(7425);
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(7, VertexFormats.POSITION_COLOR);
-        buffer.vertex((double) (left + right), (double) top, (double) zLevel).color(f1, f2, f3, f).next();
-        buffer.vertex((double) left, (double) top, (double) zLevel).color(f1, f2, f3, f).next();
-        buffer.vertex((double) left, (double) (top + bottom), (double) zLevel).color(f5, f6, f7, f4).next();
-        buffer.vertex((double) (left + right), (double) (top + bottom), (double) zLevel).color(f5, f6, f7, f4).next();
-        tessellator.draw();
-        GlStateManager.shadeModel(7424);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture();
-    }
+	public static void enable2DRender()
+	{
+		GlStateManager.disableLighting();
+		GlStateManager.disableDepthTest();
+	}
 
-    public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height, int tw, int th) {
-        float f = 0.00390625F;
-        float f1 = 0.00390625F;
-        float zLevel = 0.0F;
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(7, VertexFormats.POSITION_UV);
-        buffer.vertex((double) (x), (double) (y + height), (double) zLevel).texture((double) ((float) (textureX) * f), (double) ((float) (textureY + th) * f1)).next();
-        buffer.vertex((double) (x + width), (double) (y + height), (double) zLevel).texture((double) ((float) (textureX + tw) * f), (double) ((float) (textureY + th) * f1)).next();
-        buffer.vertex((double) (x + width), (double) (y), (double) zLevel).texture((double) ((float) (textureX + tw) * f), (double) ((float) (textureY) * f1)).next();
-        buffer.vertex((double) (x), (double) (y), (double) zLevel).texture((double) ((float) (textureX) * f), (double) ((float) (textureY) * f1)).next();
-        tessellator.draw();
-    }
+	public static void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor)
+	{
+		float zLevel = 0.0F;
 
-    public static List<TextComponent> itemDisplayNameMultiline(ItemStack itemstack) {
-        List<TextComponent> namelist = null;
-        try {
-            namelist = itemstack.getTooltipText(CLIENT.player, TooltipContext.Default.NORMAL);
-        } catch (Throwable ignored) {
-        }
+		float f = (float) (startColor >> 24 & 255) / 255.0F;
+		float f1 = (float) (startColor >> 16 & 255) / 255.0F;
+		float f2 = (float) (startColor >> 8 & 255) / 255.0F;
+		float f3 = (float) (startColor & 255) / 255.0F;
+		float f4 = (float) (endColor >> 24 & 255) / 255.0F;
+		float f5 = (float) (endColor >> 16 & 255) / 255.0F;
+		float f6 = (float) (endColor >> 8 & 255) / 255.0F;
+		float f7 = (float) (endColor & 255) / 255.0F;
+		GlStateManager.disableTexture();
+		GlStateManager.enableBlend();
+		GlStateManager.disableAlphaTest();
+		GlStateManager.blendFuncSeparate(770, 771, 1, 0);
+		GlStateManager.shadeModel(7425);
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buffer = tessellator.getBufferBuilder();
+		buffer.begin(7, VertexFormats.POSITION_COLOR);
+		buffer.vertex((double) (left + right), (double) top, (double) zLevel).color(f1, f2, f3, f).next();
+		buffer.vertex((double) left, (double) top, (double) zLevel).color(f1, f2, f3, f).next();
+		buffer.vertex((double) left, (double) (top + bottom), (double) zLevel).color(f5, f6, f7, f4).next();
+		buffer.vertex((double) (left + right), (double) (top + bottom), (double) zLevel).color(f5, f6, f7, f4).next();
+		tessellator.draw();
+		GlStateManager.shadeModel(7424);
+		GlStateManager.disableBlend();
+		GlStateManager.enableAlphaTest();
+		GlStateManager.enableTexture();
+	}
 
-        if (namelist == null)
-            namelist = new ArrayList<>();
+	public static void drawTexturedModalRect(int x, int y, int textureX, int textureY, int width, int height, int tw, int th)
+	{
+		float f = 0.00390625F;
+		float f1 = 0.00390625F;
+		float zLevel = 0.0F;
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buffer = tessellator.getBufferBuilder();
+		buffer.begin(7, VertexFormats.POSITION_UV);
+		buffer.vertex((double) (x), (double) (y + height), (double) zLevel).texture((double) ((float) (textureX) * f), (double) ((float) (textureY + th) * f1)).next();
+		buffer.vertex((double) (x + width), (double) (y + height), (double) zLevel).texture((double) ((float) (textureX + tw) * f), (double) ((float) (textureY + th) * f1)).next();
+		buffer.vertex((double) (x + width), (double) (y), (double) zLevel).texture((double) ((float) (textureX + tw) * f), (double) ((float) (textureY) * f1)).next();
+		buffer.vertex((double) (x), (double) (y), (double) zLevel).texture((double) ((float) (textureX) * f), (double) ((float) (textureY) * f1)).next();
+		tessellator.draw();
+	}
 
-        if (namelist.isEmpty())
-            namelist.add(new StringTextComponent("Unnamed"));
+	public static List<Component> itemDisplayNameMultiline(ItemStack itemstack)
+	{
+		List<Component> namelist = null;
 
-        namelist.set(0, new StringTextComponent(itemstack.getRarity().formatting.toString() + namelist.get(0)));
-        for (int i = 1; i < namelist.size(); i++)
-            namelist.set(i, namelist.get(i));
+		try
+		{
+			namelist = itemstack.getTooltipText(CLIENT.player, TooltipContext.Default.NORMAL);
+		}
+		catch (Throwable ignored)
+		{
+		}
 
-        return namelist;
-    }
+		if (namelist == null)
+			namelist = new ArrayList<>();
 
-    public static String itemDisplayNameShort(ItemStack itemstack) {
-        List<TextComponent> list = itemDisplayNameMultiline(itemstack);
-        return String.format(Waila.CONFIG.get().getFormatting().getBlockName(), list.get(0).getFormattedText());
-    }
+		if (namelist.isEmpty())
+			namelist.add(new TextComponent("Unnamed"));
 
-    public static void renderIcon(int x, int y, int sx, int sy, IconUI icon) {
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        CLIENT.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_LOCATION);
+		namelist.set(0, new TextComponent(itemstack.getRarity().formatting.toString() + namelist.get(0)));
 
-        if (icon == null)
-            return;
+		for (int i = 1; i < namelist.size(); i++)
+			namelist.set(i, namelist.get(i));
 
-        if (icon.bu != -1)
-            DisplayUtil.drawTexturedModalRect(x, y, icon.bu, icon.bv, sx, sy, icon.bsu, icon.bsv);
-        DisplayUtil.drawTexturedModalRect(x, y, icon.u, icon.v, sx, sy, icon.su, icon.sv);
-    }
+		return namelist;
+	}
+
+	public static String itemDisplayNameShort(ItemStack itemstack)
+	{
+		List<Component> list = itemDisplayNameMultiline(itemstack);
+
+		return String.format(Waila.CONFIG.get().getFormatting().getBlockName(), list.get(0).getFormattedText());
+	}
+
+	public static void renderIcon(int x, int y, int sx, int sy, IconUI icon)
+	{
+		GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		CLIENT.getTextureManager().bindTexture(DrawableHelper.GUI_ICONS_LOCATION);
+
+		if (icon == null)
+			return;
+
+		if (icon.bu != -1)
+			DisplayUtil.drawTexturedModalRect(x, y, icon.bu, icon.bv, sx, sy, icon.bsu, icon.bsv);
+
+		DisplayUtil.drawTexturedModalRect(x, y, icon.u, icon.v, sx, sy, icon.su, icon.sv);
+	}
 }

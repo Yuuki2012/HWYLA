@@ -1,19 +1,21 @@
 package mcp.mobius.waila.api.impl;
 
-import net.minecraft.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Identifier;
 
-public class TaggedTextComponent extends StringTextComponent {
+public class TaggedTextComponent extends TextComponent
+{
+	private final Identifier tag;
 
-    private final Identifier tag;
+	public TaggedTextComponent(Identifier tag)
+	{
+		super(String.format("${%s}", tag.toString()));
 
-    public TaggedTextComponent(Identifier tag) {
-        super(String.format("${%s}", tag.toString()));
+		this.tag = tag;
+	}
 
-        this.tag = tag;
-    }
-
-    public Identifier getTag() {
-        return tag;
-    }
+	public Identifier getTag()
+	{
+		return tag;
+	}
 }
